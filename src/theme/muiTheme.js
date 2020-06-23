@@ -13,6 +13,27 @@ const theme = createMuiTheme({
       dark: "#000000",
     },
   },
+  overrides: {
+    MuiOutlinedInput: {
+      root: {
+        "& $notchedOutline": {
+          borderColor: "#FFF",
+        },
+        "&:hover:not($disabled):not($focused):not($error) $notchedOutline": {
+          borderColor: "#b2ff59",
+          borderWidth: "2px",
+        },
+      },
+      input: {
+        color: "#FFF",
+      },
+    },
+    MuiFormLabel: {
+      root: {
+        color: "#FFF",
+      },
+    },
+  },
 });
 
 export default theme;

@@ -9,3 +9,19 @@ const ADD_ARTIST = gql`
     }
   }
 `;
+
+export const ADD_SONG = gql`
+  mutation {
+    addSong(
+      name: "Lockdown"
+      lyrics: "asdfasdfasdf;lkjasdl;ksadflkjsfadklj;fsadlkj;sfadlk;asfdlkj;asdf"
+      artist: "Anderson .paak"
+      genre: "Hip Hop"
+    ) {
+      name
+      lyrics
+      artist
+      genre
+    }
+  }
+`;

@@ -241,7 +241,7 @@ const NavBar = () => {
             <Link to="/charts" className={classes.linkbar__link}>
               Charts
             </Link>
-            <Link to="/addSong" className={classes.linkbar__link}>
+            <Link to="/add-song" className={classes.linkbar__link}>
               Add A Song
             </Link>
             <div className={classes.linkbar__util_icons}>
