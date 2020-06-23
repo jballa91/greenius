@@ -3,10 +3,16 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
-import { Auth0Provider, Auth0Context } from "./greenius-auth0-spa";
+
+// Auth0 imports
+import { Auth0Provider } from "./greenius-auth0-spa";
 import config from "./auth_config.json";
 import history from "./utils/history";
 
+// Apollo imports
+import { ApolloWrapper } from "./ApolloWrapper";
+
+// graphql imports
 const onRedirectCallback = (appState) => {
   history.push(
     appState && appState.targetUrl
@@ -16,14 +22,18 @@ const onRedirectCallback = (appState) => {
 };
 
 ReactDOM.render(
-  <Auth0Provider
-    domain={config.domain}
-    client_id={config.clientId}
-    redirect_uri={window.location.origin}
-    onRedirectCallback={onRedirectCallback}
-  >
-    <App />
-  </Auth0Provider>,
+  <React.StrictMode>
+    <Auth0Provider
+      domain={config.domain}
+      client_id={config.clientId}
+      redirect_uri={window.location.origin}
+      onRedirectCallback={onRedirectCallback}
+    >
+      <ApolloWrapper>
+        <App />
+      </ApolloWrapper>
+    </Auth0Provider>
+  </React.StrictMode>,
   document.getElementById("root")
 );
 
