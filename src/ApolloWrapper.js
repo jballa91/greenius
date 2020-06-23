@@ -1,12 +1,11 @@
-import client from "./client";
-
 import { ApolloClient } from "apollo-client";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import { HttpLink } from "apollo-link-http";
+import { ApolloProvider } from "@apollo/react-hooks";
 import { setContext } from "@apollo/link-context";
 
 import { useAuth0 } from "./greenius-auth0-spa";
-import { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 function ApolloWrapper({ children }) {
   const { isAuthenticated, getTokenSilently } = useAuth0();

@@ -10,7 +10,7 @@ import config from "./auth_config.json";
 import history from "./utils/history";
 
 // Apollo imports
-import { ApolloWrapper } from "./ApolloWrapper";
+import ApolloWrapper from "./ApolloWrapper";
 
 // graphql imports
 const onRedirectCallback = (appState) => {
@@ -27,6 +27,7 @@ ReactDOM.render(
       domain={config.domain}
       client_id={config.clientId}
       redirect_uri={window.location.origin}
+      audience={config.audience}
       onRedirectCallback={onRedirectCallback}
     >
       <ApolloWrapper>
