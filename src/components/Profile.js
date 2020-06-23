@@ -1,63 +1,48 @@
 import React, { Fragment, useEffect } from "react";
 import { useAuth0 } from "../greenius-auth0-spa";
+import { makeStyles } from "@material-ui/core/styles";
+import { Container, Typography } from "@material-ui/core";
 
-import { useQuery, useMutation } from "@apollo/react-hooks";
-import gql from "graphql-tag";
-
-const ALL_ARTISTS = gql`
-  {
-    getArtists {
-      id
-      name
-      genre
-    }
-  }
-`;
-
-const ADD_ARTIST = gql`
-  mutation {
-    addArtist(name: "Andre 3k", genre: "Hip Hop") {
-      id
-      name
-      genre
-    }
-  }
-`;
+const useStyles = makeStyles((theme) => ({
+  profile: {
+    width: "inherit",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  profile__pic: {
+    height: "200px",
+    width: "180px",
+  },
+  profile__info: {
+    width: "fit-content",
+  },
+}));
 
 const Profile = () => {
-  const { user } = useAuth0();
-  const { data, loading, error } = useQuery(ALL_ARTISTS);
-  const [addArtist, newArtist] = useMutation(ADD_ARTIST);
+  const { user, loading } = useAuth0();
+  const classes = useStyles();
 
-  if (loading || !user || newArtist.loading) {
+  if (loading) {
     return <div>Loading...</div>;
   }
 
-  const onClick = () => {
-    addArtist({
-      name: "J. Cole",
-      genre: "Hip Hop",
-    });
-  };
-
   return (
-    <Fragment>
-      <img src={user.picture} alt="Profile" />
-
-      <h2>{user.name}</h2>
-      <p>{user.email}</p>
-      <code>{JSON.stringify(user, null, 2)}</code>
-      {data.getArtists.map((artist) => {
-        return (
-          <div>
-            <h2>{artist.id}</h2>
-            <h3>{artist.name}</h3>
-            <h4>{artist.genre}</h4>
-          </div>
-        );
-      })}
-      <button onClick={onClick}>Add J. Cole</button>
-    </Fragment>
+    <Container>
+      <div className={classes.profile}>
+        <img
+          className={classes.profile__pic}
+          src={user.picture}
+          alt="Profile"
+        />
+        <Typography className={classes.profile__info} variant="h1">
+          {user.name}
+        </Typography>
+        <Typography className={classes.profile__info} variant="h3">
+          {user.email}
+        </Typography>
+      </div>
+    </Container>
   );
 };
 

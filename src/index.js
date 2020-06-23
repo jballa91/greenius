@@ -3,6 +3,8 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
+import { MuiThemeProvider } from "@material-ui/core/styles";
+import theme from "./theme/muiTheme";
 
 // Auth0 imports
 import { Auth0Provider } from "./greenius-auth0-spa";
@@ -31,7 +33,9 @@ ReactDOM.render(
       onRedirectCallback={onRedirectCallback}
     >
       <ApolloWrapper>
-        <App />
+        <MuiThemeProvider theme={theme}>
+          <App />
+        </MuiThemeProvider>
       </ApolloWrapper>
     </Auth0Provider>
   </React.StrictMode>,
