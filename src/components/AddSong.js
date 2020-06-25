@@ -1,16 +1,21 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth0 } from "../greenius-auth0-spa";
 import { makeStyles } from "@material-ui/core/styles";
 import { useMutation } from "@apollo/react-hooks";
+import gql from "graphql-tag";
 import {
   Container,
   Typography,
   Divider,
   TextField,
   Button,
+  FormLabel,
+  FormControlLabel,
+  RadioGroup,
+  Radio,
+  FormControl,
 } from "@material-ui/core";
 import PlaylistAdd from "@material-ui/icons/PlaylistAdd";
-import { ADD_SONG } from "../graphql/mutations";
 
 const useStyles = makeStyles((theme) => ({
   add_song_form__page: {
@@ -41,19 +46,68 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     marginBottom: theme.spacing(2),
   },
+  add_song_form__radio_group: {
+    flexDirection: "column",
+  },
+  button: {
+    marginTop: theme.spacing(1),
+  },
 }));
+
+const ADD_SONG = gql`
+  mutation addSong($newSong: NewSongInput!) {
+    addSong(input: $newSong) {
+      name
+      artist
+      genre
+      lyrics
+      likes
+      dislikes
+    }
+  }
+`;
 
 const AddSong = () => {
   const { user, loading } = useAuth0();
   const [addSong, newSong] = useMutation(ADD_SONG);
 
+  const [songName, setSongName] = useState("");
+  const [songArtist, setSongArtist] = useState("");
+  const [songLyrics, setSongLyrics] = useState("");
+  const [songGenre, setSongGenre] = useState("POP");
+
   const classes = useStyles();
 
-  const onSubmit = () => {
-    addSong();
+  const changeName = (e) => {
+    setSongName(e.target.value);
+  };
+  const changeArtist = (e) => {
+    setSongArtist(e.target.value);
+  };
+  const changeLyrics = (e) => {
+    setSongLyrics(e.target.value);
+  };
+  const changeGenre = (e) => {
+    setSongGenre(e.target.value);
   };
 
-  if (loading) {
+  const onSubmit = async () => {
+    await addSong({
+      variables: {
+        newSong: {
+          name: songName,
+          artist: songArtist,
+          genre: songGenre,
+          lyrics: songLyrics.split("\n"),
+          likes: 0,
+          dislikes: 0,
+        },
+      },
+    });
+    console.log(newSong.data);
+  };
+
+  if (loading || newSong.loading) {
     return <div>Loading...</div>;
   }
 
@@ -77,6 +131,7 @@ const AddSong = () => {
               color="primary"
               autoComplete="off"
               className={classes.add_song_form__input}
+              onChange={(e) => changeName(e)}
             />
             <TextField
               required
@@ -87,6 +142,7 @@ const AddSong = () => {
               color="primary"
               autoComplete="off"
               className={classes.add_song_form__input}
+              onChange={(e) => changeArtist(e)}
             />
             <TextField
               required
@@ -100,7 +156,65 @@ const AddSong = () => {
               rows="10"
               rowsMax="20"
               className={classes.add_song_form__input}
+              onChange={(e) => changeLyrics(e)}
             />
+            <FormControl component="fieldset" required>
+              <FormLabel component="legend">Genre</FormLabel>
+              <RadioGroup
+                aria-label="genre"
+                name="genre"
+                className={classes.add_song_form__radio_group}
+                value={songGenre}
+                onChange={changeGenre}
+                defaultValue={songGenre}
+              >
+                <div className={classes.add_song_form__radio_sub_group}>
+                  <FormControlLabel
+                    value="POP"
+                    control={<Radio color="primary" />}
+                    label="Pop"
+                  />
+                  <FormControlLabel
+                    value="HIPHOP"
+                    control={<Radio color="primary" />}
+                    label="Hip Hop"
+                  />
+                  <FormControlLabel
+                    value="ALT"
+                    control={<Radio color="primary" />}
+                    label="Alternative"
+                  />
+                  <FormControlLabel
+                    value="ROCK"
+                    control={<Radio color="primary" />}
+                    label="Rock"
+                  />
+                </div>
+                <div className={classes.add_song_form__radio_sub_group}>
+                  <FormControlLabel
+                    value="RB"
+                    control={<Radio color="primary" />}
+                    label="R&B"
+                  />
+                  <FormControlLabel
+                    value="JAZZ"
+                    control={<Radio color="primary" />}
+                    label="Jazz"
+                  />
+                  <FormControlLabel
+                    value="COUNTRY"
+                    control={<Radio color="primary" />}
+                    label="Country"
+                  />
+                  <FormControlLabel
+                    value="NON"
+                    control={<Radio color="primary" />}
+                    label="Non-Music"
+                  />
+                </div>
+              </RadioGroup>
+            </FormControl>
+            <br></br>
             <Button
               variant="contained"
               color="primary"
