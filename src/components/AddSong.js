@@ -60,6 +60,7 @@ const ADD_SONG = gql`
       name
       artist
       genre
+      img
       lyrics
       likes
       dislikes
@@ -73,6 +74,7 @@ const AddSong = () => {
 
   const [songName, setSongName] = useState("");
   const [songArtist, setSongArtist] = useState("");
+  const [songImg, setSongImg] = useState("");
   const [songLyrics, setSongLyrics] = useState("");
   const [songGenre, setSongGenre] = useState("POP");
 
@@ -83,6 +85,9 @@ const AddSong = () => {
   };
   const changeArtist = (e) => {
     setSongArtist(e.target.value);
+  };
+  const changeImg = (e) => {
+    setSongImg(e.target.value);
   };
   const changeLyrics = (e) => {
     setSongLyrics(e.target.value);
@@ -98,6 +103,7 @@ const AddSong = () => {
           name: songName,
           artist: songArtist,
           genre: songGenre,
+          img: songImg,
           lyrics: songLyrics.split("\n"),
           likes: 0,
           dislikes: 0,
@@ -143,6 +149,17 @@ const AddSong = () => {
               autoComplete="off"
               className={classes.add_song_form__input}
               onChange={(e) => changeArtist(e)}
+            />
+            <TextField
+              required
+              id="song-img-input"
+              label="Album Artwork Url"
+              variant="outlined"
+              placeholder="What's the packaging on this wax look like?"
+              color="primary"
+              autoComplete="off"
+              className={classes.add_song_form__input}
+              onChange={(e) => changeImg(e)}
             />
             <TextField
               required

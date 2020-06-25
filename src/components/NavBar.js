@@ -13,6 +13,7 @@ import {
   Button,
   IconButton,
   Avatar,
+  Tooltip,
 } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -193,20 +194,17 @@ const NavBar = () => {
               </Typography>
             </div>
             <div className={classes.navbar__util_icons}>
-              <IconButton aria-label="show 4 new mails" color="inherit">
+              <IconButton aria-label="mail" color="inherit">
                 <NotificationsIcon />
               </IconButton>
 
-              <IconButton
-                aria-label="show 17 new notifications"
-                color="inherit"
-              >
+              <IconButton aria-label="notifications" color="inherit">
                 {" "}
                 <MailIcon />
               </IconButton>
               <IconButton
                 edge="end"
-                aria-label="account of current user"
+                aria-label="account"
                 aria-controls={menuId}
                 aria-haspopup="true"
                 onClick={handleProfileMenuOpen}
@@ -249,13 +247,17 @@ const NavBar = () => {
                 href="https://www.linkedin.com/in/james-ballard-901/"
                 className={classes.linkbar__util_icon_link}
               >
-                <LinkedInIcon className={classes.linkbar__util_icon} />
+                <Tooltip title="LinkedIn">
+                  <LinkedInIcon className={classes.linkbar__util_icon} />
+                </Tooltip>
               </a>
               <a
                 href="https://github.com/jballa91"
                 className={classes.linkbar__util_icon_link}
               >
-                <GitHubIcon className={classes.linkbar__util_icon} />
+                <Tooltip title="GitHub">
+                  <GitHubIcon className={classes.linkbar__util_icon} />
+                </Tooltip>
               </a>
             </div>
           </Breadcrumbs>
