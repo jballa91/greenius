@@ -63,7 +63,7 @@ const SongComments = (props) => {
       variables: {
         newSongComment: {
           content: newCommentContent,
-          likes: 200,
+          likes: 0,
           dislikes: 0,
           songId: song.id,
           postedBy: user.nickname,
