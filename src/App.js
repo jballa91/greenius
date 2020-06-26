@@ -9,6 +9,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import Featured from "./components/featured/Featured";
 import Profile from "./components/Profile";
 import AddSong from "./components/AddSong";
+import SongPage from "./components/SongPage";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         </header>
         <Switch>
           <Route path="/" exact />
+          <PrivateRoute path="/songs/:id" component={SongPage} />
           <PrivateRoute path="/featured" component={Featured} />
           <PrivateRoute path="/profile" component={Profile} />
           <PrivateRoute path="/add-song" component={AddSong} />

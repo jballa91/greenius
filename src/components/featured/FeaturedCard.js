@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { useAuth0 } from "../../greenius-auth0-spa";
 import { makeStyles } from "@material-ui/core/styles";
 import { useMutation } from "@apollo/react-hooks";
@@ -17,8 +18,12 @@ import WhatshotIcon from "@material-ui/icons/Whatshot";
 import HotelIcon from "@material-ui/icons/Hotel";
 
 const useStyles = makeStyles((theme) => ({
-  featured_card: {
+  featured_card__link: {
     width: "50%",
+    textDecoration: "none",
+  },
+  featured_card: {
+    width: "100%",
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
@@ -123,44 +128,46 @@ const FeaturedCard = ({ song }) => {
   };
 
   return (
-    <Card className={classes.featured_card}>
-      <Box className={classes.featured_card__column}>
-        <CardMedia
-          className={classes.featured_card__art}
-          image={song.img}
-          title="Album Artwork"
-        />
-        <Box className={classes.featured_card__info}>
-          <Typography>{song.name}</Typography>
-          <Typography>{song.artist}</Typography>
-          <Typography>{song.genre}</Typography>
+    <Link className={classes.featured_card__link} to={`/songs/${song.id}`}>
+      <Card className={classes.featured_card}>
+        <Box className={classes.featured_card__column}>
+          <CardMedia
+            className={classes.featured_card__art}
+            image={song.img}
+            title="Album Artwork"
+          />
+          <Box className={classes.featured_card__info}>
+            <Typography>{song.name}</Typography>
+            <Typography>{song.artist}</Typography>
+            <Typography>{song.genre}</Typography>
+          </Box>
         </Box>
-      </Box>
-      <Box className={classes.featured_card__column}>
-        <CardActions>
-          <IconButton
-            className={classes.featured_card__like}
-            aria-label="Like"
-            onClick={(e) => onLike(e)}
-          >
-            <WhatshotIcon className={classes.featured_card__like_icon} />
-          </IconButton>
-          <Typography className={classes.featured_card__like_number}>
-            {likes}
-          </Typography>
-          <IconButton
-            className={classes.featured_card__dislike}
-            aria-label="Dislike"
-            onClick={(e) => onDislike(e)}
-          >
-            <HotelIcon className={classes.featured_card__dislike_icon} />
-          </IconButton>
-          <Typography className={classes.featured_card__dislike_number}>
-            {dislikes}
-          </Typography>
-        </CardActions>
-      </Box>
-    </Card>
+        <Box className={classes.featured_card__column}>
+          <CardActions>
+            <IconButton
+              className={classes.featured_card__like}
+              aria-label="Like"
+              onClick={(e) => onLike(e)}
+            >
+              <WhatshotIcon className={classes.featured_card__like_icon} />
+            </IconButton>
+            <Typography className={classes.featured_card__like_number}>
+              {likes}
+            </Typography>
+            <IconButton
+              className={classes.featured_card__dislike}
+              aria-label="Dislike"
+              onClick={(e) => onDislike(e)}
+            >
+              <HotelIcon className={classes.featured_card__dislike_icon} />
+            </IconButton>
+            <Typography className={classes.featured_card__dislike_number}>
+              {dislikes}
+            </Typography>
+          </CardActions>
+        </Box>
+      </Card>
+    </Link>
   );
 };
 
