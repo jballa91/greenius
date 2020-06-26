@@ -1,24 +1,22 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth0 } from "../greenius-auth0-spa";
 import { makeStyles } from "@material-ui/core/styles";
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import gql from "graphql-tag";
-import {
-  Container,
-  Typography,
-  Button,
-  Box,
-  IconButton,
-  Divider,
-} from "@material-ui/core";
-import WhatshotIcon from "@material-ui/icons/Whatshot";
-import HotelIcon from "@material-ui/icons/Hotel";
+import { Container, Typography, Box, Divider } from "@material-ui/core";
+
+import LikeSuite from "./LikeSuite";
+import SongComments from "./SongComments";
 
 const useStyles = makeStyles((theme) => ({
+  song_page__container: {
+    backgroundColor: theme.palette.secondary.dark,
+    paddingTop: theme.spacing(2),
+    color: "#FFF",
+  },
   song_page: {
     display: "flex",
     justifyContent: "space-between",
-    marginTop: theme.spacing(2),
   },
   song_page__left: {
     display: "flex",
@@ -82,6 +80,7 @@ const useStyles = makeStyles((theme) => ({
   },
   song_page__right: {
     width: "calc(30% - 2px)",
+    paddingLeft: theme.spacing(2),
   },
 }));
 
@@ -96,70 +95,62 @@ const GET_SONG = gql`
       lyrics
       likes
       dislikes
+      comments {
+        content
+        likes
+        dislikes
+        songId
+        postedBy
+      }
     }
   }
 `;
 
 const SongPage = (props) => {
   const { user } = useAuth0();
-  const songId = props.match.params.id;
   const classes = useStyles();
+  const songId = props.match.params.id;
   const { data, loading, error } = useQuery(GET_SONG, {
     variables: { id: songId },
   });
-  useEffect(() => {});
 
   if (loading) return <div>Loading...</div>;
+
   return (
-    <Container className={classes.song_page}>
-      <Box className={classes.song_page__left}>
-        <Box className={classes.left__header}>
-          <img className={classes.left__header_img} src={data.getSong.img} />
-          <Box className={classes.left__header_details}>
-            <Typography variant="h2">{data.getSong.name}</Typography>
-            <Typography variant="h4">{data.getSong.artist}</Typography>
-            <Typography variant="h6">{data.getSong.genre}</Typography>
+    <Box className={classes.song_page__container}>
+      <Container className={classes.song_page}>
+        <Box className={classes.song_page__left}>
+          <Box className={classes.left__header}>
+            <img className={classes.left__header_img} src={data.getSong.img} />
+            <Box className={classes.left__header_details}>
+              <Typography variant="h2">{data.getSong.name}</Typography>
+              <Typography variant="h4">{data.getSong.artist}</Typography>
+              <Typography variant="h6">{data.getSong.genre}</Typography>
+            </Box>
+            <Box className={classes.left__header_like_dislike}>
+              <LikeSuite song={data.getSong} />
+            </Box>
           </Box>
-          <Box className={classes.left__header_like_dislike}>
-            <IconButton
-              className={classes.left_header__like}
-              aria-label="Like"
-              // onClick={(e) => onLike(e)}
+          <Box className={classes.left__lyrics_container}>
+            <Typography
+              component="pre"
+              variant="h6"
+              className={classes.left__lyrics}
             >
-              <WhatshotIcon className={classes.left_header__like_icon} />
-            </IconButton>
-            <Typography className={classes.left_header__like_number}>
-              {data.getSong.likes}
-            </Typography>
-            <IconButton
-              className={classes.left_header__dislike}
-              aria-label="Dislike"
-              // onClick={(e) => onDislike(e)}
-            >
-              <HotelIcon className={classes.left_header__dislike_icon} />
-            </IconButton>
-            <Typography className={classes.left_header__dislike_number}>
-              {data.getSong.dislikes}
+              {data.getSong.lyrics.join("\n")}
             </Typography>
           </Box>
         </Box>
-        <Box className={classes.left__lyrics_container}>
-          <Typography
-            component="pre"
-            variant="h6"
-            className={classes.left__lyrics}
-          >
-            {data.getSong.lyrics.join("\n")}
-          </Typography>
+        <Divider
+          className={classes.song_page__divider}
+          orientation="vertical"
+          flexItem={true}
+        />
+        <Box className={classes.song_page__right}>
+          <SongComments song={data.getSong} />
         </Box>
-      </Box>
-      <Divider
-        className={classes.song_page__divider}
-        orientation="vertical"
-        flexItem={true}
-      />
-      <Box className={classes.song_page__right}></Box>
-    </Container>
+      </Container>
+    </Box>
   );
 };
 

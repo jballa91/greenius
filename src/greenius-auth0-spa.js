@@ -1,5 +1,17 @@
 import React, { useState, useEffect, useContext } from "react";
 import createAuth0Client from "@auth0/auth0-spa-js";
+import gql from "graphql-tag";
+import { useQuery, useMutation } from "@apollo/react-hooks";
+
+const ADD_USER = `
+  mutation addUser($newUser: NewUserInput!) {
+    addUser(input: $newUser) {
+      id
+      userName
+      email
+    }
+  }
+`;
 
 const DEFAULT_REDIRECT_CALLBACK = () =>
   window.history.replaceState({}, document.title, window.location.pathname);
@@ -36,7 +48,27 @@ export const Auth0Provider = ({
 
       if (isAuthenticated) {
         const user = await auth0FromHook.getUser();
-        setUser(user);
+        const token = await auth0FromHook.getTokenSilently();
+
+        const variables = {
+          newUser: { userName: user.nickname, email: user.email },
+        };
+        let result = await fetch(`http://localhost:4000/graphql`, {
+          method: "Post",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            operationName: "addUser",
+            query: ADD_USER,
+            variables,
+          }),
+        });
+
+        const { data } = await result.json();
+
+        setUser({ ...user, id: data.addUser.id });
       }
 
       setLoading(false);

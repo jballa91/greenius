@@ -6,7 +6,8 @@ import { Router, Route, Switch } from "react-router-dom";
 import history from "./utils/history";
 import PrivateRoute from "./components/PrivateRoute";
 
-import Featured from "./components/featured/Featured";
+import Featured from "./components/Featured";
+import Charts from "./components/Charts";
 import Profile from "./components/Profile";
 import AddSong from "./components/AddSong";
 import SongPage from "./components/SongPage";
@@ -21,8 +22,9 @@ function App() {
         </header>
         <Switch>
           <Route path="/" exact />
-          <PrivateRoute path="/songs/:id" component={SongPage} />
-          <PrivateRoute path="/featured" component={Featured} />
+          <Route path="/songs/:id" component={SongPage} />
+          <Route path="/featured" component={Featured} />
+          <Route path="/charts" component={Charts} />
           <PrivateRoute path="/profile" component={Profile} />
           <PrivateRoute path="/add-song" component={AddSong} />
         </Switch>

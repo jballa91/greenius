@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { useAuth0 } from "../../greenius-auth0-spa";
+import React from "react";
+import { useAuth0 } from "../greenius-auth0-spa";
 import { makeStyles } from "@material-ui/core/styles";
 import { useQuery } from "@apollo/react-hooks";
 import gql from "graphql-tag";
-import { Container, Box } from "@material-ui/core";
+import { Container } from "@material-ui/core";
 
-import FeaturedCard from "./FeaturedCard";
+import SongCard from "./SongCard";
 
 const useStyles = makeStyles((theme) => ({
   featured__container: {
@@ -16,8 +16,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ALL_SONGS = gql`
-  query getSongsByDate {
-    getSongsByDate {
+  query getSongsByPop {
+    getSongsByPop {
       id
       name
       artist
@@ -42,8 +42,8 @@ const Featured = () => {
   return (
     <div className={classes.featured__page}>
       <Container className={classes.featured__container}>
-        {data.getSongsByDate.map((song) => {
-          return <FeaturedCard song={song} />;
+        {data.getSongsByPop.map((song) => {
+          return <SongCard song={song} />;
         })}
       </Container>
     </div>
