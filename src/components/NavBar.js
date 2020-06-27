@@ -23,6 +23,8 @@ import NotificationsIcon from "@material-ui/icons/Notifications";
 import LinkedInIcon from "@material-ui/icons/LinkedIn";
 import GitHubIcon from "@material-ui/icons/GitHub";
 
+import Loader from "./Loader";
+
 const useStyles = makeStyles((theme) => ({
   header: {
     position: "static",
@@ -40,6 +42,11 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
+  },
+  navbar__util_icons: {
+    width: "234px",
+    display: "flex",
+    justifyContent: "flex-end",
   },
   navbar__login: {
     justifySelf: "end",
@@ -137,7 +144,7 @@ const NavBar = () => {
 
   const isMenuOpen = Boolean(anchorEl);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <Loader />;
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -161,7 +168,7 @@ const NavBar = () => {
       <Link className={classes.navbar__menu_link} to="/profile">
         <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
       </Link>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      {/* <MenuItem onClick={handleMenuClose}>My account</MenuItem> */}
       <MenuItem onClick={(handleMenuClose, () => logout())}>Log out</MenuItem>
     </Menu>
   );
@@ -190,14 +197,14 @@ const NavBar = () => {
               </Typography>
             </div>
             <div className={classes.navbar__util_icons}>
-              <IconButton aria-label="mail" color="inherit">
+              {/* <IconButton aria-label="mail" color="inherit">
                 <NotificationsIcon />
               </IconButton>
 
               <IconButton aria-label="notifications" color="inherit">
                 {" "}
                 <MailIcon />
-              </IconButton>
+              </IconButton> */}
               <IconButton
                 edge="end"
                 aria-label="account"

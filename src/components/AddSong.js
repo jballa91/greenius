@@ -17,6 +17,8 @@ import {
 } from "@material-ui/core";
 import PlaylistAdd from "@material-ui/icons/PlaylistAdd";
 
+import Loader from "./Loader";
+
 const useStyles = makeStyles((theme) => ({
   add_song_form__page: {
     backgroundColor: theme.palette.secondary.main,
@@ -113,7 +115,7 @@ const AddSong = () => {
   };
 
   if (loading || newSong.loading) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
 
   return (

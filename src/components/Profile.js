@@ -3,6 +3,8 @@ import { useAuth0 } from "../greenius-auth0-spa";
 import { makeStyles } from "@material-ui/core/styles";
 import { Container, Typography } from "@material-ui/core";
 
+import Loader from "./Loader";
+
 const useStyles = makeStyles((theme) => ({
   profile: {
     width: "inherit",
@@ -24,7 +26,7 @@ const Profile = () => {
   const classes = useStyles();
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
 
   return (

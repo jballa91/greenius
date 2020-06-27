@@ -4,6 +4,7 @@ import { useQuery } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import { Container, Typography, Box, Divider } from "@material-ui/core";
 
+import Loader from "./Loader";
 import LikeSuite from "./LikeSuite";
 import SongComments from "./SongComments";
 
@@ -95,6 +96,7 @@ const GET_SONG = gql`
       likes
       dislikes
       comments {
+        id
         content
         likes
         dislikes
@@ -112,7 +114,7 @@ const SongPage = (props) => {
     variables: { id: songId },
   });
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <Loader />;
 
   return (
     <Box className={classes.song_page__container}>

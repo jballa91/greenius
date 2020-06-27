@@ -9,6 +9,9 @@ import WhatshotIcon from "@material-ui/icons/Whatshot";
 import HotelIcon from "@material-ui/icons/Hotel";
 
 const useStyles = makeStyles((theme) => ({
+  like_suite__container: {
+    padding: 0,
+  },
   like_suite__like_icon: {
     color: theme.palette.error.main,
     "&&:hover": {
@@ -38,57 +41,53 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EDIT_SONG = gql`
-  mutation editSong($editedSong: SongInput!) {
-    editSong(input: $editedSong) {
+const EDIT_COMMENT = gql`
+  mutation editSongComment($editedSongComment: SongCommentInput!) {
+    editSongComment(input: $editedSongComment) {
       id
-      name
-      artist
-      genre
-      img
-      lyrics
+      content
       likes
       dislikes
+      songId
+      postedBy
     }
   }
 `;
 
-const LikeSuite = ({ song }) => {
+const LikeSuite_Comment = ({ comment }) => {
   const { user } = useAuth0();
   const classes = useStyles();
-  const [editSong, $editedSong] = useMutation(EDIT_SONG);
-  const [likes, setLikes] = useState(song.likes);
-  const [dislikes, setDislikes] = useState(song.dislikes);
+  const [editSongComment, $editedSongComment] = useMutation(EDIT_COMMENT);
+  const [likes, setLikes] = useState(comment.likes);
+  const [dislikes, setDislikes] = useState(comment.dislikes);
 
   const onLike = async (e) => {
     e.preventDefault();
     setLikes(likes + 1);
     if (dislikes > 0) {
       setDislikes(dislikes - 1);
-      await editSong({
+      await editSongComment({
         variables: {
-          editedSong: {
-            id: song.id,
-            name: song.name,
-            artist: song.artist,
-            genre: song.genre,
-            img: song.img,
-            likes: song.likes + 1,
-            dislikes: song.dislikes - 1,
+          editedSongComment: {
+            id: comment.id,
+            content: comment.content,
+            likes: comment.likes + 1,
+            dislikes: comment.dislikes - 1,
+            songId: comment.songId,
+            postedBy: comment.postedBy,
           },
         },
       });
     } else {
-      await editSong({
+      await editSongComment({
         variables: {
-          editedSong: {
-            id: song.id,
-            name: song.name,
-            artist: song.artist,
-            genre: song.genre,
-            img: song.img,
-            likes: song.likes + 1,
-            dislikes: song.dislikes,
+          editedSongComment: {
+            id: comment.id,
+            content: comment.content,
+            likes: comment.likes + 1,
+            dislikes: comment.dislikes,
+            songId: comment.songId,
+            postedBy: comment.postedBy,
           },
         },
       });
@@ -100,30 +99,28 @@ const LikeSuite = ({ song }) => {
     setDislikes(dislikes + 1);
     if (likes > 0) {
       setLikes(likes - 1);
-      await editSong({
+      await editSongComment({
         variables: {
-          editedSong: {
-            id: song.id,
-            name: song.name,
-            artist: song.artist,
-            genre: song.genre,
-            img: song.img,
-            likes: song.likes - 1,
-            dislikes: song.dislikes + 1,
+          editedSongComment: {
+            id: comment.id,
+            content: comment.content,
+            likes: comment.likes - 1,
+            dislikes: comment.dislikes + 1,
+            songId: comment.songId,
+            postedBy: comment.postedBy,
           },
         },
       });
     } else {
-      await editSong({
+      await editSongComment({
         variables: {
-          editedSong: {
-            id: song.id,
-            name: song.name,
-            artist: song.artist,
-            genre: song.genre,
-            img: song.img,
-            likes: song.likes,
-            dislikes: song.dislikes + 1,
+          editedSongComment: {
+            id: comment.id,
+            content: comment.content,
+            likes: comment.likes,
+            dislikes: comment.dislikes + 1,
+            songId: comment.songId,
+            postedBy: comment.postedBy,
           },
         },
       });
@@ -135,13 +132,16 @@ const LikeSuite = ({ song }) => {
   };
 
   return (
-    <CardActions>
+    <CardActions className={classes.like_suite__container}>
       <IconButton
         className={classes.like_suite__like}
         aria-label="Like"
         onClick={(e) => onLike(e)}
       >
-        <WhatshotIcon className={classes.like_suite__like_icon} />
+        <WhatshotIcon
+          className={classes.like_suite__like_icon}
+          fontSize="small"
+        />
       </IconButton>
       <Typography
         className={classes.like_suite__like_number}
@@ -154,7 +154,10 @@ const LikeSuite = ({ song }) => {
         aria-label="Dislike"
         onClick={(e) => onDislike(e)}
       >
-        <HotelIcon className={classes.like_suite__dislike_icon} />
+        <HotelIcon
+          className={classes.like_suite__dislike_icon}
+          fontSize="small"
+        />
       </IconButton>
       <Typography
         className={classes.like_suite__dislike_number}
@@ -166,4 +169,4 @@ const LikeSuite = ({ song }) => {
   );
 };
 
-export default LikeSuite;
+export default LikeSuite_Comment;

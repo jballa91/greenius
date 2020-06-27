@@ -5,7 +5,7 @@ import ChildCareIcon from "@material-ui/icons/ChildCare";
 import SportsHandballIcon from "@material-ui/icons/SportsHandball";
 import CommentIcon from "@material-ui/icons/Comment";
 
-import LikeSuite from "./LikeSuite";
+import LikeSuite_Comment from "./LikeSuite_Comment";
 
 const useStyles = makeStyles((theme) => ({
   song_comment_box: {
@@ -13,7 +13,9 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     backgroundColor: theme.palette.secondary.light,
     marginBottom: theme.spacing(2),
-    padding: theme.spacing(1),
+    paddingTop: theme.spacing(1),
+    paddingRight: theme.spacing(1),
+    paddingLeft: theme.spacing(1),
   },
   song_comment_box__header: {
     display: "flex",
@@ -52,14 +54,14 @@ const useStyles = makeStyles((theme) => ({
 
 const SongCommentBox = ({ comment }) => {
   const likes = comment.likes;
-  // const dislikes = comment.dislikes;
+  const dislikes = comment.dislikes;
   const classes = useStyles();
 
   return (
     <Box className={classes.song_comment_box}>
       <Box className={classes.song_comment_box__header}>
         <Box className={classes.header__icon_name}>
-          {likes >= 100 ? (
+          {likes - dislikes >= 100 ? (
             <SportsHandballIcon color="error" />
           ) : (
             <Box className={classes.child_care_icon}>
@@ -83,7 +85,7 @@ const SongCommentBox = ({ comment }) => {
           </Typography>
         </Box>
         <Box className={classes.like_suite_container}>
-          <LikeSuite className={classes.like_suite} song={comment} />
+          <LikeSuite_Comment className={classes.like_suite} comment={comment} />
         </Box>
       </Box>
     </Box>

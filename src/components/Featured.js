@@ -4,6 +4,7 @@ import { useQuery } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import { Container } from "@material-ui/core";
 
+import Loader from "./Loader";
 import SongCard from "./SongCard";
 
 const useStyles = makeStyles((theme) => ({
@@ -34,7 +35,7 @@ const Featured = () => {
 
   const classes = useStyles();
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <Loader />;
   if (error) return <div>error...</div>;
 
   return (
