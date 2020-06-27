@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useQuery } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import { Container, Typography, Box, Divider } from "@material-ui/core";
 
 import Loader from "./Loader";
-import LikeSuite from "./LikeSuite";
+import LikeSuiteSongPage from "./LikeSuiteSongPage";
 import SongComments from "./SongComments";
+import SongLikedBy from "./SongLikedBy";
 
 const useStyles = makeStyles((theme) => ({
   song_page__container: {
@@ -39,9 +40,14 @@ const useStyles = makeStyles((theme) => ({
   },
   left__header_like_dislike: {
     display: "flex",
+    flexDirection: "column",
     height: "30px",
+    maxWidth: "260px",
     marginLeft: theme.spacing(3),
     marginTop: theme.spacing(3),
+  },
+  left__header_liked_by: {
+    marginLeft: theme.spacing(2),
   },
   left_header__like_icon: {
     color: theme.palette.error.main,
@@ -95,6 +101,9 @@ const GET_SONG = gql`
       lyrics
       likes
       dislikes
+      postedBy
+      likedBy
+      dislikedBy
       comments {
         id
         content
@@ -102,6 +111,8 @@ const GET_SONG = gql`
         dislikes
         songId
         postedBy
+        likedBy
+        dislikedBy
       }
     }
   }
@@ -113,6 +124,9 @@ const SongPage = (props) => {
   const { data, loading } = useQuery(GET_SONG, {
     variables: { id: songId },
   });
+  // const [song, setSong] = useState({});
+
+  // useEffect(() => {}, [props]);
 
   if (loading) return <Loader />;
 
@@ -127,12 +141,12 @@ const SongPage = (props) => {
               alt="Album Artwork"
             />
             <Box className={classes.left__header_details}>
-              <Typography variant="h2">{data.getSong.name}</Typography>
+              <Typography variant="h3">{data.getSong.name}</Typography>
               <Typography variant="h4">{data.getSong.artist}</Typography>
               <Typography variant="h6">{data.getSong.genre}</Typography>
             </Box>
             <Box className={classes.left__header_like_dislike}>
-              <LikeSuite song={data.getSong} />
+              <LikeSuiteSongPage song={data.getSong} />
             </Box>
           </Box>
           <Box className={classes.left__lyrics_container}>

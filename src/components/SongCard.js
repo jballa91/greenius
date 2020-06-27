@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography, Card, CardMedia, Box } from "@material-ui/core";
 
-import LikeSuite from "./LikeSuite";
+import LikeSuiteSongCard from "./LikeSuiteSongCard";
 
 const useStyles = makeStyles((theme) => ({
   featured_card__link: {
@@ -55,7 +55,7 @@ const FeaturedCard = ({ song }) => {
           </Box>
         </Box>
         <Box className={classes.featured_card__column}>
-          <LikeSuite song={song} />
+          <LikeSuiteSongCard song={song} />
         </Box>
       </Card>
     </Link>

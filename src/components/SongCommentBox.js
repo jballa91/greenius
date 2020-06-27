@@ -5,7 +5,7 @@ import ChildCareIcon from "@material-ui/icons/ChildCare";
 import SportsHandballIcon from "@material-ui/icons/SportsHandball";
 import CommentIcon from "@material-ui/icons/Comment";
 
-import LikeSuite_Comment from "./LikeSuite_Comment";
+import LikeSuiteComment from "./LikeSuiteComment";
 
 const useStyles = makeStyles((theme) => ({
   song_comment_box: {
@@ -85,7 +85,7 @@ const SongCommentBox = ({ comment }) => {
           </Typography>
         </Box>
         <Box className={classes.like_suite_container}>
-          <LikeSuite_Comment className={classes.like_suite} comment={comment} />
+          <LikeSuiteComment className={classes.like_suite} comment={comment} />
         </Box>
       </Box>
     </Box>

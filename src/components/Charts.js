@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useQuery } from "@apollo/react-hooks";
 import gql from "graphql-tag";
@@ -26,6 +26,9 @@ const ALL_SONGS = gql`
       lyrics
       likes
       dislikes
+      postedBy
+      likedBy
+      dislikedBy
     }
   }
 `;
@@ -34,6 +37,7 @@ const Featured = () => {
   const { data, loading, error } = useQuery(ALL_SONGS);
 
   const classes = useStyles();
+  useEffect(() => {}, []);
 
   if (loading) return <Loader />;
   if (error) return <div>error...</div>;

@@ -66,6 +66,9 @@ const ADD_SONG = gql`
       lyrics
       likes
       dislikes
+      postedBy
+      likedBy
+      dislikedBy
     }
   }
 `;
@@ -109,6 +112,9 @@ const AddSong = () => {
           lyrics: songLyrics.split("\n"),
           likes: 0,
           dislikes: 0,
+          postedBy: user.nickname,
+          likedBy: [],
+          dislikedBy: [],
         },
       },
     });

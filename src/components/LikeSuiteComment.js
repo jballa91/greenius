@@ -50,11 +50,13 @@ const EDIT_COMMENT = gql`
       dislikes
       songId
       postedBy
+      likedBy
+      dislikedBy
     }
   }
 `;
 
-const LikeSuite_Comment = ({ comment }) => {
+const LikeSuiteComment = ({ comment }) => {
   const { user } = useAuth0();
   const classes = useStyles();
   const [editSongComment, $editedSongComment] = useMutation(EDIT_COMMENT);
@@ -75,6 +77,8 @@ const LikeSuite_Comment = ({ comment }) => {
             dislikes: comment.dislikes - 1,
             songId: comment.songId,
             postedBy: comment.postedBy,
+            likedBy: [...comment.likedBy, user.nickname],
+            dislikedBy: comment.dislikedBy,
           },
         },
       });
@@ -88,6 +92,8 @@ const LikeSuite_Comment = ({ comment }) => {
             dislikes: comment.dislikes,
             songId: comment.songId,
             postedBy: comment.postedBy,
+            likedBy: [...comment.likedBy, user.nickname],
+            dislikedBy: comment.dislikedBy,
           },
         },
       });
@@ -108,6 +114,8 @@ const LikeSuite_Comment = ({ comment }) => {
             dislikes: comment.dislikes + 1,
             songId: comment.songId,
             postedBy: comment.postedBy,
+            likedBy: comment.likedBy,
+            dislikedBy: [...comment.dislikedBy, user.nickname],
           },
         },
       });
@@ -121,6 +129,8 @@ const LikeSuite_Comment = ({ comment }) => {
             dislikes: comment.dislikes + 1,
             songId: comment.songId,
             postedBy: comment.postedBy,
+            likedBy: comment.likedBy,
+            dislikedBy: [...comment.dislikedBy, user.nickname],
           },
         },
       });
@@ -169,4 +179,4 @@ const LikeSuite_Comment = ({ comment }) => {
   );
 };
 
-export default LikeSuite_Comment;
+export default LikeSuiteComment;

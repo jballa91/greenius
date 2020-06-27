@@ -36,12 +36,17 @@ const GET_SONG = gql`
       lyrics
       likes
       dislikes
+      postedBy
+      likedBy
+      dislikedBy
       comments {
         content
         likes
         dislikes
         songId
         postedBy
+        likedBy
+        dislikedBy
       }
     }
   }
