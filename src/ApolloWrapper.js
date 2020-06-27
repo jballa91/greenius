@@ -32,7 +32,6 @@ function ApolloWrapper({ children }) {
 
   const link = ApolloLink.from([delay, http]);
   const cache = new InMemoryCache();
-  console.log(cache);
 
   const authLink = setContext((_, { headers, ...rest }) => {
     if (!bearerToken) return { headers, ...rest };

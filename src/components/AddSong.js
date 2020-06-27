@@ -110,7 +110,6 @@ const AddSong = () => {
         },
       },
     });
-    console.log(newSong.data);
   };
 
   if (loading || newSong.loading) {
