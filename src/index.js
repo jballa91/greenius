@@ -24,21 +24,19 @@ const onRedirectCallback = (appState) => {
 };
 
 ReactDOM.render(
-  <React.StrictMode>
-    <Auth0Provider
-      domain={config.domain}
-      client_id={config.clientId}
-      redirect_uri={window.location.origin}
-      audience={config.audience}
-      onRedirectCallback={onRedirectCallback}
-    >
-      <ApolloWrapper>
-        <MuiThemeProvider theme={theme}>
-          <App />
-        </MuiThemeProvider>
-      </ApolloWrapper>
-    </Auth0Provider>
-  </React.StrictMode>,
+  <Auth0Provider
+    domain={config.domain}
+    client_id={config.clientId}
+    redirect_uri={window.location.origin}
+    audience={config.audience}
+    onRedirectCallback={onRedirectCallback}
+  >
+    <ApolloWrapper>
+      <MuiThemeProvider theme={theme}>
+        <App />
+      </MuiThemeProvider>
+    </ApolloWrapper>
+  </Auth0Provider>,
   document.getElementById("root")
 );
 

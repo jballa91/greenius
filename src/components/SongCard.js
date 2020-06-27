@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
-import { useAuth0 } from "../greenius-auth0-spa";
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography, Card, CardMedia, Box } from "@material-ui/core";
 
@@ -38,7 +37,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const FeaturedCard = ({ song }) => {
-  const { user } = useAuth0();
   const classes = useStyles();
 
   return (

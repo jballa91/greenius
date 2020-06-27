@@ -1,11 +1,8 @@
-import React, { useState } from "react";
-import { useAuth0 } from "../greenius-auth0-spa";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { useQuery, useMutation } from "@apollo/react-hooks";
 import { Box, Typography, Divider } from "@material-ui/core";
 import ChildCareIcon from "@material-ui/icons/ChildCare";
 import SportsHandballIcon from "@material-ui/icons/SportsHandball";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import CommentIcon from "@material-ui/icons/Comment";
 
 import LikeSuite from "./LikeSuite";
@@ -54,11 +51,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const SongCommentBox = ({ comment }) => {
-  const { user } = useAuth0();
-  const [likes, setLikes] = useState(comment.likes);
-  const [dislikes, setDislikes] = useState(comment.dislikes);
+  const likes = comment.likes;
+  // const dislikes = comment.dislikes;
   const classes = useStyles();
-  console.log(comment);
 
   return (
     <Box className={classes.song_comment_box}>

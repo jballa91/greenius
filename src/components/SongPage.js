@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { useAuth0 } from "../greenius-auth0-spa";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { useQuery, useMutation } from "@apollo/react-hooks";
+import { useQuery } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import { Container, Typography, Box, Divider } from "@material-ui/core";
 
@@ -107,10 +106,9 @@ const GET_SONG = gql`
 `;
 
 const SongPage = (props) => {
-  const { user } = useAuth0();
   const classes = useStyles();
   const songId = props.match.params.id;
-  const { data, loading, error } = useQuery(GET_SONG, {
+  const { data, loading } = useQuery(GET_SONG, {
     variables: { id: songId },
   });
 
@@ -121,7 +119,11 @@ const SongPage = (props) => {
       <Container className={classes.song_page}>
         <Box className={classes.song_page__left}>
           <Box className={classes.left__header}>
-            <img className={classes.left__header_img} src={data.getSong.img} />
+            <img
+              className={classes.left__header_img}
+              src={data.getSong.img}
+              alt="Album Artwork"
+            />
             <Box className={classes.left__header_details}>
               <Typography variant="h2">{data.getSong.name}</Typography>
               <Typography variant="h4">{data.getSong.artist}</Typography>

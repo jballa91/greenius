@@ -1,5 +1,4 @@
 import React from "react";
-import { useAuth0 } from "../greenius-auth0-spa";
 import { makeStyles } from "@material-ui/core/styles";
 import { useQuery } from "@apollo/react-hooks";
 import gql from "graphql-tag";
@@ -31,7 +30,6 @@ const ALL_SONGS = gql`
 `;
 
 const Featured = () => {
-  const { user } = useAuth0();
   const { data, loading, error } = useQuery(ALL_SONGS);
 
   const classes = useStyles();

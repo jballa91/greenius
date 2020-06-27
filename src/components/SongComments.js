@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useAuth0 } from "../greenius-auth0-spa";
 import { makeStyles } from "@material-ui/core/styles";
-import { useQuery, useMutation } from "@apollo/react-hooks";
+import { useMutation } from "@apollo/react-hooks";
 import gql from "graphql-tag";
-import { Typography, Box, Divider, TextField, Button } from "@material-ui/core";
+import { Typography, Box, TextField, Button } from "@material-ui/core";
 import SportsHandballIcon from "@material-ui/icons/SportsHandball";
-
-import LikeSuite from "./LikeSuite";
 import SongCommentBox from "./SongCommentBox";
 
 const useStyles = makeStyles((theme) => ({
@@ -27,6 +25,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const GET_SONG = gql`
+  query getSong($id: ID!) {
+    getSong(_id: $id) {
+      id
+      name
+      artist
+      genre
+      img
+      lyrics
+      likes
+      dislikes
+      comments {
+        content
+        likes
+        dislikes
+        songId
+        postedBy
+      }
+    }
+  }
+`;
+
 const ADD_COMMENT = gql`
   mutation addSongComment($newSongComment: NewSongCommentInput!) {
     addSongComment(input: $newSongComment) {
@@ -43,23 +63,27 @@ const ADD_COMMENT = gql`
 const SongComments = (props) => {
   const { user } = useAuth0();
   const classes = useStyles();
-  const [addSongComment, newSongComment] = useMutation(ADD_COMMENT);
+  const [addSongComment] = useMutation(ADD_COMMENT, {
+    update(cache, { data: { addSongComment } }) {
+      const getSong = cache.readQuery({ query: GET_SONG });
+      cache.writeQuery({
+        query: GET_SONG,
+        data: { getSong: getSong.comments.concat([addSongComment]) },
+      });
+    },
+  });
   const song = props.song;
-  const [comments, setComments] = useState([]);
+  const [comments, setComments] = useState(song.comments);
   const [newCommentContent, setNewCommentContent] = useState("");
 
-  console.log(user);
+  useEffect(() => {}, [comments]);
 
   const changeNewComment = (e) => {
     setNewCommentContent(e.target.value);
   };
 
-  useEffect(() => {
-    setComments(song.comments);
-  }, [comments]);
-
-  const onSubmit = async () => {
-    await addSongComment({
+  const onSubmit = () => {
+    addSongComment({
       variables: {
         newSongComment: {
           content: newCommentContent,
@@ -70,7 +94,18 @@ const SongComments = (props) => {
         },
       },
     });
-    setComments([...comments, newSongComment]);
+    setComments([
+      ...comments,
+      {
+        content: newCommentContent,
+        likes: 0,
+        dislikes: 0,
+        songId: song.id,
+        postedBy: user.nickname,
+      },
+    ]);
+    const inputField = document.getElementById("comment-form-input");
+    inputField.value = "";
   };
 
   return (

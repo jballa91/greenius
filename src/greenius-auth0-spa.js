@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
 import createAuth0Client from "@auth0/auth0-spa-js";
-import gql from "graphql-tag";
-import { useQuery, useMutation } from "@apollo/react-hooks";
 
 const ADD_USER = `
   mutation addUser($newUser: NewUserInput!) {

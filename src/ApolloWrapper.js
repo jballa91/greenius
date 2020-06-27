@@ -1,5 +1,6 @@
 import { ApolloClient } from "apollo-client";
 import { InMemoryCache } from "apollo-cache-inmemory";
+import { ApolloLink } from "apollo-link";
 import { HttpLink } from "apollo-link-http";
 import { ApolloProvider } from "@apollo/react-hooks";
 import { setContext } from "@apollo/link-context";
@@ -19,8 +20,19 @@ function ApolloWrapper({ children }) {
     getToken();
   }, [getTokenSilently, isAuthenticated]);
 
-  const link = new HttpLink({ uri: "http://localhost:4000/graphql" });
+  const http = new HttpLink({ uri: "http://localhost:4000/graphql" });
+  const delay = setContext(
+    (request) =>
+      new Promise((success, fail) => {
+        setTimeout(() => {
+          success();
+        }, 800);
+      })
+  );
+
+  const link = ApolloLink.from([delay, http]);
   const cache = new InMemoryCache();
+  console.log(cache);
 
   const authLink = setContext((_, { headers, ...rest }) => {
     if (!bearerToken) return { headers, ...rest };
@@ -37,6 +49,7 @@ function ApolloWrapper({ children }) {
   const client = new ApolloClient({
     link: authLink.concat(link),
     cache,
+    connectToDevTools: true,
   });
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>;
