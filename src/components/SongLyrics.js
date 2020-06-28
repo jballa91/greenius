@@ -17,7 +17,8 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   song_lyrics__anno: {
-    backgroundColor: theme.palette.secondary.main,
+    whiteSpace: "pre-wrap",
+    backgroundColor: theme.palette.secondary.light,
     "&&:hover": {
       cursor: "pointer",
       backgroundColor: theme.palette.primary.dark,
@@ -31,6 +32,8 @@ const SongLyrics = ({
   annotations,
   setOpenAnnotation,
   setIsAnnotationOpen,
+  setIsNewAnnotationOpen,
+  setSelection,
 }) => {
   const classes = useStyles();
 
@@ -38,6 +41,60 @@ const SongLyrics = ({
     e.preventDefault();
     setIsAnnotationOpen(true);
     setOpenAnnotation(e.target.id);
+  };
+
+  const findOffset = (ele) => {
+    let offset = 0;
+    while (ele.previousSibling) {
+      offset += ele.previousSibling.textContent.length;
+      ele = ele.previousSibling;
+    }
+    return offset;
+  };
+
+  const isValidAnnotation = (range, annotations) => {
+    let valid = true;
+    if (range[1] - range[0] <= 0) {
+      valid = false;
+    }
+    annotations.forEach((annotation) => {
+      if (
+        range[0] <= annotation.endIndex &&
+        annotation.startIndex <= range[1]
+      ) {
+        valid = false;
+      }
+    });
+    console.log("VALID", valid);
+
+    return valid;
+  };
+
+  const handleSelection = (e) => {
+    let parent = document.getSelection().anchorNode.parentElement;
+    let start = document.getSelection().anchorOffset;
+    let end = document.getSelection().focusOffset;
+
+    if (end < start) {
+      let temp = start;
+      start = end;
+      end = temp;
+    }
+    console.log("START", start);
+    console.log("END", end);
+
+    let offset = findOffset(parent);
+    let range = [start + offset, end + offset];
+    console.log("RANGE", range);
+
+    if (isValidAnnotation(range, annotations)) {
+      setIsAnnotationOpen(false);
+      setSelection({ start: range[0], end: range[1] });
+      setIsNewAnnotationOpen(true);
+    } else {
+      setIsNewAnnotationOpen(false);
+      return;
+    }
   };
 
   const orderAnnotations = (annotations) => {
@@ -86,12 +143,14 @@ const SongLyrics = ({
     return lyricsArray;
   };
 
-  useEffect(() => {}, [setIsAnnotationOpen]);
+  useEffect(() => {
+    annotateLyrics(lyrics, annotations);
+  }, [setIsAnnotationOpen, annotations]);
 
   return (
-    <Box className={classes.song_lyrics__container}>
+    <p className={classes.song_lyrics__container} onMouseUp={handleSelection}>
       {annotateLyrics(lyrics, annotations)}
-    </Box>
+    </p>
   );
 };
 

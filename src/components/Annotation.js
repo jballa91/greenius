@@ -10,7 +10,7 @@ import InfoIcon from "@material-ui/icons/Info";
 import CloseIcon from "@material-ui/icons/Close";
 
 import Loader from "./Loader";
-import LikeSuiteComment from "./LikeSuiteComment";
+import LikeSuiteAnnotation from "./LikeSuiteAnnotation";
 
 const useStyles = makeStyles((theme) => ({
   annotation__container: {
@@ -27,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
   annotation__header: {
     display: "flex",
     justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: theme.spacing(1),
   },
   header__icon_name: {
@@ -45,6 +46,14 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(1),
     marginLeft: theme.spacing(1),
   },
+  annotation__close_button: {},
+  annotation__close_icon: {
+    color: theme.palette.warning.main,
+    "&&:hover": {
+      color: theme.palette.error,
+      cursor: "pointer",
+    },
+  },
   annotation__icon_content: {
     display: "flex",
   },
@@ -61,7 +70,12 @@ const useStyles = makeStyles((theme) => ({
 
 // const GET_ANNOTATION = gql``;
 
-const Annotation = ({ annotation, setOpenAnnotation, setIsAnnotationOpen }) => {
+const Annotation = ({
+  annotation,
+  setOpenAnnotation,
+  setIsAnnotationOpen,
+  refetch,
+}) => {
   const classes = useStyles();
   const likes = annotation.likes;
   const dislikes = annotation.dislikes;
@@ -87,7 +101,11 @@ const Annotation = ({ annotation, setOpenAnnotation, setIsAnnotationOpen }) => {
             {annotation.postedBy}
           </Typography>
         </Box>
-        <CloseIcon onClick={(e) => handleClose(e)} />
+        <CloseIcon
+          fontSize="small"
+          className={classes.annotation__close_icon}
+          onClick={(e) => handleClose(e)}
+        />
       </Box>
       <Divider />
       <Box className={classes.annotation__content_container}>
@@ -98,9 +116,10 @@ const Annotation = ({ annotation, setOpenAnnotation, setIsAnnotationOpen }) => {
           </Typography>
         </Box>
         <Box className={classes.annotation__like_suite_container}>
-          <LikeSuiteComment
+          <LikeSuiteAnnotation
             className={classes.like_suite}
-            comment={annotation}
+            annotation={annotation}
+            refetch={refetch}
           />
         </Box>
       </Box>

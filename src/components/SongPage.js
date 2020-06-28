@@ -10,6 +10,7 @@ import SongComments from "./SongComments";
 import SongLikedBy from "./SongLikedBy";
 import SongLyrics from "./SongLyrics";
 import Annotation from "./Annotation";
+import NewAnnotation from "./NewAnnotation";
 
 const useStyles = makeStyles((theme) => ({
   song_page__container: {
@@ -142,10 +143,14 @@ const SongPage = (props) => {
   // Hooks for Annotation / Comments
   const [isAnnotationOpen, setIsAnnotationOpen] = useState(false);
   const [openAnnotation, setOpenAnnotation] = useState({});
+  const [selection, setSelection] = useState({});
+  const [isNewAnnotationOpen, setIsNewAnnotationOpen] = useState(false);
 
   useEffect(() => {
+    console.log("SELECTION", selection);
+
     refetch();
-  }, [props]);
+  }, [props, selection]);
 
   if (loading) return <Loader />;
 
@@ -180,6 +185,8 @@ const SongPage = (props) => {
                 annotations={data.getSong.annotations}
                 setOpenAnnotation={setOpenAnnotation}
                 setIsAnnotationOpen={setIsAnnotationOpen}
+                setIsNewAnnotationOpen={setIsNewAnnotationOpen}
+                setSelection={setSelection}
               />
             </Typography>
           </Box>
@@ -194,11 +201,20 @@ const SongPage = (props) => {
             <Annotation
               setOpenAnnotation={setOpenAnnotation}
               setIsAnnotationOpen={setIsAnnotationOpen}
+              refetch={refetch}
               annotation={
                 data.getSong.annotations.filter(
                   (annotation) => annotation.id === openAnnotation
                 )[0]
               }
+            />
+          ) : isNewAnnotationOpen ? (
+            <NewAnnotation
+              setIsNewAnnotationOpen={setIsNewAnnotationOpen}
+              setIsAnnotationOpen={setIsAnnotationOpen}
+              selection={selection}
+              refetch={refetch}
+              songId={data.getSong.id}
             />
           ) : (
             <SongComments refetch={refetch} song={data.getSong} />
