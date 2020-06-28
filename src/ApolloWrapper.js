@@ -21,16 +21,8 @@ function ApolloWrapper({ children }) {
   }, [getTokenSilently, isAuthenticated]);
 
   const http = new HttpLink({ uri: "http://localhost:4000/graphql" });
-  const delay = setContext(
-    (request) =>
-      new Promise((success, fail) => {
-        setTimeout(() => {
-          success();
-        }, 800);
-      })
-  );
 
-  const link = ApolloLink.from([delay, http]);
+  const link = ApolloLink.from([http]);
   const cache = new InMemoryCache();
 
   const authLink = setContext((_, { headers, ...rest }) => {
@@ -46,9 +38,9 @@ function ApolloWrapper({ children }) {
   });
 
   const client = new ApolloClient({
+    connectToDevTools: true,
     link: authLink.concat(link),
     cache,
-    connectToDevTools: true,
   });
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>;

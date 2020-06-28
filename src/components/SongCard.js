@@ -1,9 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useAuth0 } from "../greenius-auth0-spa";
 import { makeStyles } from "@material-ui/core/styles";
 import { Typography, Card, CardMedia, Box } from "@material-ui/core";
 
 import LikeSuiteSongCard from "./LikeSuiteSongCard";
+import Loader from "./Loader";
 
 const useStyles = makeStyles((theme) => ({
   featured_card__link: {
@@ -36,8 +38,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const FeaturedCard = ({ song }) => {
+const FeaturedCard = ({ song, refetch }) => {
   const classes = useStyles();
+  const { loading } = useAuth0();
+
+  if (loading) return <Loader />;
 
   return (
     <Link className={classes.featured_card__link} to={`/songs/${song.id}`}>
@@ -55,7 +60,7 @@ const FeaturedCard = ({ song }) => {
           </Box>
         </Box>
         <Box className={classes.featured_card__column}>
-          <LikeSuiteSongCard song={song} />
+          <LikeSuiteSongCard refetch={refetch} song={song} />
         </Box>
       </Card>
     </Link>

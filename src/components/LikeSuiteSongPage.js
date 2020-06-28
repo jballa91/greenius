@@ -9,6 +9,7 @@ import WhatshotIcon from "@material-ui/icons/Whatshot";
 import HotelIcon from "@material-ui/icons/Hotel";
 
 import SongLikedBy from "./SongLikedBy";
+import Loader from "./Loader";
 
 const useStyles = makeStyles((theme) => ({
   like_suite__like_icon: {
@@ -58,44 +59,21 @@ const EDIT_SONG = gql`
   }
 `;
 
-const LikeSuiteSongPage = ({ song }) => {
-  const { user } = useAuth0();
+const LikeSuiteSongPage = ({ song, refetch }) => {
+  const { user, loading } = useAuth0();
   const classes = useStyles();
-  const [editSong, $editedSong] = useMutation(EDIT_SONG);
+  const [editSong, editedSong] = useMutation(EDIT_SONG);
   const [likes, setLikes] = useState(song.likes);
   const [dislikes, setDislikes] = useState(song.dislikes);
   const [likedBy, setLikedBy] = useState(song.likedBy);
   const [dislikedBy, setDislikedBy] = useState(song.dislikedBy);
 
-  useEffect(() => {
-    editSong({
-      variables: {
-        editedSong: {
-          id: song.id,
-          name: song.name,
-          artist: song.artist,
-          genre: song.genre,
-          img: song.img,
-          likes: likes,
-          dislikes: dislikes,
-          postedBy: song.postedBy,
-          likedBy: likedBy,
-          dislikedBy: dislikedBy,
-        },
-      },
-    });
-  }, [likes, dislikes, likedBy, dislikedBy]);
-
-  console.log("LIKEDBY", likedBy);
-  console.log("DISLIKED BY", dislikedBy);
-
   const onLike = async (e) => {
     e.preventDefault();
-    if (likedBy.includes(user.nickname)) {
+    if (!user || likedBy.includes(user.nickname)) {
       return;
     }
     setLikes(likes + 1);
-    console.log("LIKES BEFORE GQL", likes);
 
     if (dislikes > 0) {
       setDislikes(dislikes - 1);
@@ -103,19 +81,54 @@ const LikeSuiteSongPage = ({ song }) => {
       setDislikedBy(
         dislikedBy.filter((nickname) => nickname !== user.nickname)
       );
+      editSong({
+        variables: {
+          editedSong: {
+            id: song.id,
+            name: song.name,
+            artist: song.artist,
+            genre: song.genre,
+            img: song.img,
+            likes: song.likes + 1,
+            dislikes: dislikes - 1,
+            postedBy: song.postedBy,
+            likedBy: [...song.likedBy, user.nickname],
+            dislikedBy: dislikedBy.filter(
+              (nickname) => nickname !== user.nickname
+            ),
+          },
+        },
+      });
     } else {
       setLikedBy([...likedBy, user.nickname]);
       setDislikedBy(
         dislikedBy.filter((nickname) => nickname !== user.nickname)
       );
+      editSong({
+        variables: {
+          editedSong: {
+            id: song.id,
+            name: song.name,
+            artist: song.artist,
+            genre: song.genre,
+            img: song.img,
+            likes: song.likes + 1,
+            dislikes: song.dislikes,
+            postedBy: song.postedBy,
+            likedBy: [...song.likedBy, user.nickname],
+            dislikedBy: dislikedBy.filter(
+              (nickname) => nickname !== user.nickname
+            ),
+          },
+        },
+      });
     }
-    console.log("likes", likes);
-    console.log("dislikes", dislikes);
+    refetch();
   };
 
   const onDislike = async (e) => {
     e.preventDefault();
-    if (dislikedBy.includes(user.nickname)) {
+    if (!user || dislikedBy.includes(user.nickname)) {
       return;
     }
     setDislikes(dislikes + 1);
@@ -123,17 +136,50 @@ const LikeSuiteSongPage = ({ song }) => {
       setLikes(likes - 1);
       setDislikedBy([...dislikedBy, user.nickname]);
       setLikedBy(likedBy.filter((nickname) => nickname !== user.nickname));
+      editSong({
+        variables: {
+          editedSong: {
+            id: song.id,
+            name: song.name,
+            artist: song.artist,
+            genre: song.genre,
+            img: song.img,
+            likes: song.likes - 1,
+            dislikes: song.dislikes + 1,
+            postedBy: song.postedBy,
+            likedBy: likedBy.filter((nickname) => nickname !== user.nickname),
+            dislikedBy: [...song.dislikedBy, user.nickname],
+          },
+        },
+      });
     } else {
       setDislikedBy([...dislikedBy, user.nickname]);
       setLikedBy(likedBy.filter((nickname) => nickname !== user.nickname));
+      editSong({
+        variables: {
+          editedSong: {
+            id: song.id,
+            name: song.name,
+            artist: song.artist,
+            genre: song.genre,
+            img: song.img,
+            likes: song.likes,
+            dislikes: song.dislikes + 1,
+            postedBy: song.postedBy,
+            likedBy: likedBy.filter((nickname) => nickname !== user.nickname),
+            dislikedBy: [...song.dislikedBy, user.nickname],
+          },
+        },
+      });
     }
-    console.log("likes", likes);
-    console.log("dislikes", dislikes);
+    refetch();
   };
 
   const clickNum = (e) => {
     e.preventDefault();
   };
+
+  if (editedSong.loading || loading) return <Loader />;
 
   return (
     <div>

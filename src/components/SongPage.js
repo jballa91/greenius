@@ -8,6 +8,8 @@ import Loader from "./Loader";
 import LikeSuiteSongPage from "./LikeSuiteSongPage";
 import SongComments from "./SongComments";
 import SongLikedBy from "./SongLikedBy";
+import SongLyrics from "./SongLyrics";
+import Annotation from "./Annotation";
 
 const useStyles = makeStyles((theme) => ({
   song_page__container: {
@@ -43,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     height: "30px",
     maxWidth: "260px",
-    marginLeft: theme.spacing(3),
+    marginLeft: theme.spacing(8),
     marginTop: theme.spacing(3),
   },
   left__header_liked_by: {
@@ -114,6 +116,18 @@ const GET_SONG = gql`
         likedBy
         dislikedBy
       }
+      annotations {
+        id
+        startIndex
+        endIndex
+        content
+        likes
+        dislikes
+        songId
+        postedBy
+        likedBy
+        dislikedBy
+      }
     }
   }
 `;
@@ -121,12 +135,17 @@ const GET_SONG = gql`
 const SongPage = (props) => {
   const classes = useStyles();
   const songId = props.match.params.id;
-  const { data, loading } = useQuery(GET_SONG, {
+  const { data, loading, refetch } = useQuery(GET_SONG, {
     variables: { id: songId },
   });
-  // const [song, setSong] = useState({});
 
-  // useEffect(() => {}, [props]);
+  // Hooks for Annotation / Comments
+  const [isAnnotationOpen, setIsAnnotationOpen] = useState(false);
+  const [openAnnotation, setOpenAnnotation] = useState({});
+
+  useEffect(() => {
+    refetch();
+  }, [props]);
 
   if (loading) return <Loader />;
 
@@ -146,7 +165,7 @@ const SongPage = (props) => {
               <Typography variant="h6">{data.getSong.genre}</Typography>
             </Box>
             <Box className={classes.left__header_like_dislike}>
-              <LikeSuiteSongPage song={data.getSong} />
+              <LikeSuiteSongPage refetch={refetch} song={data.getSong} />
             </Box>
           </Box>
           <Box className={classes.left__lyrics_container}>
@@ -155,7 +174,13 @@ const SongPage = (props) => {
               variant="h6"
               className={classes.left__lyrics}
             >
-              {data.getSong.lyrics.join("\n")}
+              <SongLyrics
+                songId={data.getSong.id}
+                lyrics={data.getSong.lyrics.join("\n")}
+                annotations={data.getSong.annotations}
+                setOpenAnnotation={setOpenAnnotation}
+                setIsAnnotationOpen={setIsAnnotationOpen}
+              />
             </Typography>
           </Box>
         </Box>
@@ -165,7 +190,19 @@ const SongPage = (props) => {
           flexItem={true}
         />
         <Box className={classes.song_page__right}>
-          <SongComments song={data.getSong} />
+          {isAnnotationOpen ? (
+            <Annotation
+              setOpenAnnotation={setOpenAnnotation}
+              setIsAnnotationOpen={setIsAnnotationOpen}
+              annotation={
+                data.getSong.annotations.filter(
+                  (annotation) => annotation.id === openAnnotation
+                )[0]
+              }
+            />
+          ) : (
+            <SongComments refetch={refetch} song={data.getSong} />
+          )}
         </Box>
       </Container>
     </Box>

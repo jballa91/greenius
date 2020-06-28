@@ -61,6 +61,8 @@ const ADD_COMMENT = gql`
       dislikes
       songId
       postedBy
+      likedBy
+      dislikedBy
     }
   }
 `;
@@ -68,15 +70,7 @@ const ADD_COMMENT = gql`
 const SongComments = (props) => {
   const { user } = useAuth0();
   const classes = useStyles();
-  const [addSongComment] = useMutation(ADD_COMMENT, {
-    update(cache, { data: { addSongComment } }) {
-      const getSong = cache.readQuery({ query: GET_SONG });
-      cache.writeQuery({
-        query: GET_SONG,
-        data: { getSong: getSong.comments.concat([addSongComment]) },
-      });
-    },
-  });
+  const [addSongComment] = useMutation(ADD_COMMENT);
   const song = props.song;
   const [comments, setComments] = useState(song.comments);
   const [newCommentContent, setNewCommentContent] = useState("");
@@ -88,6 +82,8 @@ const SongComments = (props) => {
   };
 
   const onSubmit = () => {
+    if (!user) return;
+
     addSongComment({
       variables: {
         newSongComment: {
@@ -96,6 +92,8 @@ const SongComments = (props) => {
           dislikes: 0,
           songId: song.id,
           postedBy: user.nickname,
+          likedBy: [],
+          dislikedBy: [],
         },
       },
     });
@@ -107,6 +105,8 @@ const SongComments = (props) => {
         dislikes: 0,
         songId: song.id,
         postedBy: user.nickname,
+        likedBy: [],
+        dislikedBy: [],
       },
     ]);
     const inputField = document.getElementById("comment-form-input");
@@ -122,7 +122,7 @@ const SongComments = (props) => {
       ) : (
         <Box className={classes.comment_list}>
           {comments.map((comment) => {
-            return <SongCommentBox comment={comment} />;
+            return <SongCommentBox refetch={props.refetch} comment={comment} />;
           })}
         </Box>
       )}

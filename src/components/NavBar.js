@@ -118,11 +118,15 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
   },
   linkbar__util_icon: {
-    marginRight: theme.spacing(2),
     color: "#FFF",
     "&&:hover": {
       color: theme.palette.primary.main,
     },
+  },
+  linkbar__util_icon_link_1: {
+    display: "flex",
+    alignItems: "center",
+    marginRight: theme.spacing(2),
   },
   linkbar__util_icon_link: {
     display: "flex",
@@ -248,7 +252,7 @@ const NavBar = () => {
             <div className={classes.linkbar__util_icons}>
               <a
                 href="https://www.linkedin.com/in/james-ballard-901/"
-                className={classes.linkbar__util_icon_link}
+                className={classes.linkbar__util_icon_link_1}
               >
                 <Tooltip title="LinkedIn">
                   <LinkedInIcon className={classes.linkbar__util_icon} />

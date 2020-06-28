@@ -56,19 +56,29 @@ const EDIT_COMMENT = gql`
   }
 `;
 
-const LikeSuiteComment = ({ comment }) => {
+const LikeSuiteComment = ({ comment, refetch }) => {
   const { user } = useAuth0();
   const classes = useStyles();
   const [editSongComment, $editedSongComment] = useMutation(EDIT_COMMENT);
   const [likes, setLikes] = useState(comment.likes);
   const [dislikes, setDislikes] = useState(comment.dislikes);
+  const [likedBy, setLikedBy] = useState(comment.likedBy);
+  const [dislikedBy, setDislikedBy] = useState(comment.dislikedBy);
 
   const onLike = async (e) => {
     e.preventDefault();
+    if (!user || likedBy.includes(user.nickname)) {
+      return;
+    }
     setLikes(likes + 1);
+
     if (dislikes > 0) {
       setDislikes(dislikes - 1);
-      await editSongComment({
+      setLikedBy([...likedBy, user.nickname]);
+      setDislikedBy(
+        dislikedBy.filter((nickname) => nickname !== user.nickname)
+      );
+      editSongComment({
         variables: {
           editedSongComment: {
             id: comment.id,
@@ -78,12 +88,18 @@ const LikeSuiteComment = ({ comment }) => {
             songId: comment.songId,
             postedBy: comment.postedBy,
             likedBy: [...comment.likedBy, user.nickname],
-            dislikedBy: comment.dislikedBy,
+            dislikedBy: dislikedBy.filter(
+              (nickname) => nickname !== user.nickname
+            ),
           },
         },
       });
     } else {
-      await editSongComment({
+      setLikedBy([...likedBy, user.nickname]);
+      setDislikedBy(
+        dislikedBy.filter((nickname) => nickname !== user.nickname)
+      );
+      editSongComment({
         variables: {
           editedSongComment: {
             id: comment.id,
@@ -93,19 +109,27 @@ const LikeSuiteComment = ({ comment }) => {
             songId: comment.songId,
             postedBy: comment.postedBy,
             likedBy: [...comment.likedBy, user.nickname],
-            dislikedBy: comment.dislikedBy,
+            dislikedBy: dislikedBy.filter(
+              (nickname) => nickname !== user.nickname
+            ),
           },
         },
       });
     }
+    refetch();
   };
 
   const onDislike = async (e) => {
     e.preventDefault();
+    if (!user || dislikedBy.includes(user.nickname)) {
+      return;
+    }
     setDislikes(dislikes + 1);
     if (likes > 0) {
       setLikes(likes - 1);
-      await editSongComment({
+      setDislikedBy([...dislikedBy, user.nickname]);
+      setLikedBy(likedBy.filter((nickname) => nickname !== user.nickname));
+      editSongComment({
         variables: {
           editedSongComment: {
             id: comment.id,
@@ -114,13 +138,15 @@ const LikeSuiteComment = ({ comment }) => {
             dislikes: comment.dislikes + 1,
             songId: comment.songId,
             postedBy: comment.postedBy,
-            likedBy: comment.likedBy,
+            likedBy: likedBy.filter((nickname) => nickname !== user.nickname),
             dislikedBy: [...comment.dislikedBy, user.nickname],
           },
         },
       });
     } else {
-      await editSongComment({
+      setDislikedBy([...dislikedBy, user.nickname]);
+      setLikedBy(likedBy.filter((nickname) => nickname !== user.nickname));
+      editSongComment({
         variables: {
           editedSongComment: {
             id: comment.id,
@@ -129,12 +155,13 @@ const LikeSuiteComment = ({ comment }) => {
             dislikes: comment.dislikes + 1,
             songId: comment.songId,
             postedBy: comment.postedBy,
-            likedBy: comment.likedBy,
+            likedBy: likedBy.filter((nickname) => nickname !== user.nickname),
             dislikedBy: [...comment.dislikedBy, user.nickname],
           },
         },
       });
     }
+    refetch();
   };
 
   const clickNum = (e) => {

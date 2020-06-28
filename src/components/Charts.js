@@ -33,11 +33,13 @@ const ALL_SONGS = gql`
   }
 `;
 
-const Featured = () => {
-  const { data, loading, error } = useQuery(ALL_SONGS);
+const Charts = () => {
+  const { data, loading, error, refetch } = useQuery(ALL_SONGS);
 
   const classes = useStyles();
-  useEffect(() => {}, []);
+  useEffect(() => {
+    refetch();
+  });
 
   if (loading) return <Loader />;
   if (error) return <div>error...</div>;
@@ -46,11 +48,11 @@ const Featured = () => {
     <div className={classes.featured__page}>
       <Container className={classes.featured__container}>
         {data.getSongsByPop.map((song) => {
-          return <SongCard song={song} />;
+          return <SongCard refetch={refetch} song={song} />;
         })}
       </Container>
     </div>
   );
 };
 
-export default Featured;
+export default Charts;
