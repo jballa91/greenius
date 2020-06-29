@@ -6,6 +6,7 @@ import gql from "graphql-tag";
 import { Typography, Box, TextField, Button } from "@material-ui/core";
 import SportsHandballIcon from "@material-ui/icons/SportsHandball";
 import SongCommentBox from "./SongCommentBox";
+import Loader from "./Loader";
 
 const useStyles = makeStyles((theme) => ({
   comment_form: {
@@ -111,7 +112,10 @@ const SongComments = (props) => {
     ]);
     const inputField = document.getElementById("comment-form-input");
     inputField.value = "";
+    props.refetch();
   };
+
+  if (props.loading) return <Loader />;
 
   return (
     <Box>
@@ -122,7 +126,13 @@ const SongComments = (props) => {
       ) : (
         <Box className={classes.comment_list}>
           {comments.map((comment) => {
-            return <SongCommentBox refetch={props.refetch} comment={comment} />;
+            return (
+              <SongCommentBox
+                loading={props.loading}
+                refetch={props.refetch}
+                comment={comment}
+              />
+            );
           })}
         </Box>
       )}

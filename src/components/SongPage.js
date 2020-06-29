@@ -217,7 +217,11 @@ const SongPage = (props) => {
               songId={data.getSong.id}
             />
           ) : (
-            <SongComments refetch={refetch} song={data.getSong} />
+            <SongComments
+              loading={props.loading}
+              refetch={refetch}
+              song={data.getSong}
+            />
           )}
         </Box>
       </Container>

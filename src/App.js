@@ -8,6 +8,7 @@ import PrivateRoute from "./components/PrivateRoute";
 
 import Featured from "./components/Featured";
 import Charts from "./components/Charts";
+import SearchResults from "./components/SearchResults";
 import Profile from "./components/Profile";
 import AddSong from "./components/AddSong";
 import SongPage from "./components/SongPage";
@@ -25,6 +26,7 @@ function App() {
           <Route path="/songs/:id" component={SongPage} />
           <Route path="/featured" component={Featured} />
           <Route path="/charts" component={Charts} />
+          <Route path="/search-results/:string" component={SearchResults} />
           <PrivateRoute path="/profile" component={Profile} />
           <PrivateRoute path="/add-song" component={AddSong} />
         </Switch>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 import { useAuth0 } from "../greenius-auth0-spa.js";
@@ -143,7 +143,8 @@ const NavBar = () => {
     loading,
   } = useAuth0();
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [searchContent, setSearchContent] = useState("");
   // const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
   const isMenuOpen = Boolean(anchorEl);
@@ -156,6 +157,10 @@ const NavBar = () => {
 
   const handleMenuClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleChangeSearch = (e) => {
+    setSearchContent(e.target.value);
   };
 
   const menuId = "primary-search-account-menu";
@@ -187,13 +192,20 @@ const NavBar = () => {
                 <SearchIcon />
               </div>
               <InputBase
-                placeholder="Search…"
+                placeholder=""
                 classes={{
                   root: classes.inputRoot,
                   input: classes.inputInput,
                 }}
                 inputProps={{ "aria-label": "search" }}
+                onChange={(e) => handleChangeSearch(e)}
               />
+              <Link
+                to={`/search-results/${searchContent}`}
+                className={classes.navbar__search_button}
+              >
+                Search
+              </Link>
             </div>
             <div className={classes.navbar__title_container}>
               <Typography className={classes.navbar__title} variant="h4">

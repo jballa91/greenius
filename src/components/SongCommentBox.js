@@ -6,6 +6,7 @@ import SportsHandballIcon from "@material-ui/icons/SportsHandball";
 import CommentIcon from "@material-ui/icons/Comment";
 
 import LikeSuiteComment from "./LikeSuiteComment";
+import Loader from "./Loader";
 
 const useStyles = makeStyles((theme) => ({
   song_comment_box: {
@@ -52,10 +53,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SongCommentBox = ({ comment, refetch }) => {
+const SongCommentBox = ({ loading, comment, refetch }) => {
   const classes = useStyles();
   const likes = comment.likes;
   const dislikes = comment.dislikes;
+
+  if (loading) return <Loader />;
 
   return (
     <Box className={classes.song_comment_box}>
@@ -86,6 +89,7 @@ const SongCommentBox = ({ comment, refetch }) => {
         </Box>
         <Box className={classes.like_suite_container}>
           <LikeSuiteComment
+            loading={loading}
             refetch={refetch}
             className={classes.like_suite}
             comment={comment}

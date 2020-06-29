@@ -8,6 +8,8 @@ import { Typography, CardActions, IconButton } from "@material-ui/core";
 import WhatshotIcon from "@material-ui/icons/Whatshot";
 import HotelIcon from "@material-ui/icons/Hotel";
 
+import Loader from "./Loader";
+
 const useStyles = makeStyles((theme) => ({
   like_suite__container: {
     padding: 0,
@@ -56,7 +58,7 @@ const EDIT_COMMENT = gql`
   }
 `;
 
-const LikeSuiteComment = ({ comment, refetch }) => {
+const LikeSuiteComment = ({ loading, comment, refetch }) => {
   const { user } = useAuth0();
   const classes = useStyles();
   const [editSongComment, $editedSongComment] = useMutation(EDIT_COMMENT);
@@ -167,6 +169,8 @@ const LikeSuiteComment = ({ comment, refetch }) => {
   const clickNum = (e) => {
     e.preventDefault();
   };
+
+  if (loading) return <Loader />;
 
   return (
     <CardActions className={classes.like_suite__container}>
