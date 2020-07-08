@@ -5,6 +5,8 @@ import { HttpLink } from "apollo-link-http";
 import { ApolloProvider } from "@apollo/react-hooks";
 import { setContext } from "@apollo/link-context";
 
+import { api } from "./config";
+
 import { useAuth0 } from "./greenius-auth0-spa";
 import React, { useState, useEffect } from "react";
 
@@ -20,7 +22,7 @@ function ApolloWrapper({ children }) {
     getToken();
   }, [getTokenSilently, isAuthenticated]);
 
-  const http = new HttpLink({ uri: "http://localhost:4000/graphql" });
+  const http = new HttpLink({ uri: `${api}` });
 
   const link = ApolloLink.from([http]);
   const cache = new InMemoryCache();

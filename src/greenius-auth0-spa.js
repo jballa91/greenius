@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import createAuth0Client from "@auth0/auth0-spa-js";
+import { api } from "./config";
 
 const ADD_USER = `
   mutation addUser($newUser: NewUserInput!) {
@@ -51,7 +52,7 @@ export const Auth0Provider = ({
         const variables = {
           newUser: { userName: user.nickname, email: user.email },
         };
-        let result = await fetch(`http://localhost:4000/graphql`, {
+        let result = await fetch(`${api}`, {
           method: "Post",
           headers: {
             "Content-Type": "application/json",
